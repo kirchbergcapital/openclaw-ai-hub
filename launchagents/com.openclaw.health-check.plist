@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.openclaw.health-check</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>
+DISK_USAGE=$(df -h / | tail -1 | awk '{print $5}' | tr -d '%')
+RAM_PRESSURE=$(memory_pressure 2>/dev/null | grep "System-wide" | awk '{print $NF}')
+OLLAMA_OK=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:11434/api/tags 2>/dev/null)
+GW_OK=$(pgrep -f openclaw >/dev/null 2>&amp;1 &amp;&amp; echo "running" || echo "stopped")
+
+echo "$(date) | Disk: ${DISK_USAGE}% | RAM: ${RAM_PRESSURE:-unknown} | Ollama: ${OLLAMA_OK} | Gateway: ${GW_OK}" >> /tmp/openclaw-health.log
+
+# Alert if disk > 90%
+if [ "$DISK_USAGE" -gt 90 ] 2>/dev/null; then
+    echo "$(date) ALERT: Disk usage at ${DISK_USAGE}%!" >> /tmp/openclaw-health.log
+fi
+        </string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>6</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardErrorPath</key>
+    <string>/tmp/openclaw-health-error.log</string>
+</dict>
+</plist>

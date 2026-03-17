@@ -1,0 +1,40 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# API keys
+*.key
+*.pem
+
+# macOS
+.DS_Store
+._*
+
+# Logs
+*.log
+logs/
+
+# Ollama models (too large for git)
+*.gguf
+*.bin
+models/
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OpenClaw workspace (contains personal data)
+.openclaw/

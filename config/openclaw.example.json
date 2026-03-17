@@ -1,0 +1,27 @@
+{
+  "channels": {
+    "telegram": {
+      "botToken": "YOUR_TELEGRAM_BOT_TOKEN"
+    }
+  },
+  "gateway": {
+    "port": 18789
+  },
+  "models": {
+    "primary": "anthropic/claude-sonnet-4-6"
+  },
+  "agents": {
+    "defaults": {
+      "heartbeat": {
+        "interval": 3600,
+        "schedule": "8-22",
+        "model": "ollama/qwen2.5:3b"
+      }
+    }
+  },
+  "memory": {
+    "sync": {
+      "watch": true
+    }
+  }
+}
