@@ -26,7 +26,9 @@
   },
   "memory": {
     "sync": {
-      "watch": true
+      // sync.watch is unreliable in production — new files are often not indexed automatically.
+      // Use the com.openclaw.memory-index-sync LaunchAgent instead (runs hourly, forces re-index if dirty).
+      "watch": false
     }
   }
 }

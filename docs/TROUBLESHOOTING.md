@@ -181,16 +181,23 @@ If you use a model constantly (e.g. for heartbeats), keep it loaded permanently.
 
 **Symptom:** Memory search returns stale or incomplete results.
 
-OpenClaw's `sync.watch: true` config is unreliable — files may not get indexed automatically.
+OpenClaw's `sync.watch: true` config is unreliable — files may not be indexed automatically after being written.
 
-**Fix — Force reindex:**
+**Recommended setup:** Use `sync.watch: false` in your config and rely on the `com.openclaw.memory-index-sync` LaunchAgent instead. It runs hourly and forces a re-index if the index is dirty.
+
+```bash
+# Install the LaunchAgent (replace YOUR_USER):
+sed -i '' "s|YOUR_USER|$(whoami)|g" launchagents/com.openclaw.memory-index-sync.plist
+cp launchagents/com.openclaw.memory-index-sync.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.openclaw.memory-index-sync.plist
+```
+
+**Manual fix when needed:**
 ```bash
 openclaw memory index --force
 openclaw memory status
 # Should show: Indexed: N/N files · Dirty: no
 ```
-
-**Permanent fix:** Set up a LaunchAgent to periodically reindex. See [launchagents/README.md](../launchagents/README.md).
 
 ---
 
