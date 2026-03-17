@@ -11,7 +11,16 @@
         <string>/Users/YOUR_USER/.openclaw/workspace/scripts/heartbeat-check.sh</string>
     </array>
 
-    <!-- Stündlich: 07:00–21:00 CET (UTC 06:00–20:00) -->
+    <!-- Replace YOUR_TELEGRAM_BOT_TOKEN and YOUR_TELEGRAM_CHAT_ID before loading -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>TELEGRAM_BOT_TOKEN</key>
+        <string>YOUR_TELEGRAM_BOT_TOKEN</string>
+        <key>TELEGRAM_CHAT_ID</key>
+        <string>YOUR_TELEGRAM_CHAT_ID</string>
+    </dict>
+
+    <!-- Hourly: 07:00-21:00 CET (UTC 06:00-20:00) -->
     <key>StartCalendarInterval</key>
     <array>
         <dict><key>Hour</key><integer>6</integer><key>Minute</key><integer>0</integer></dict>

@@ -67,6 +67,16 @@ launchctl list | grep openclaw
 - **Why:** Safari tabs accumulate as separate processes overnight. On a 24 GB machine with Ollama running, 10+ open tabs = 2–4 GB RAM. This reclaims it before overnight tasks run.
 - **Lesson learned:** This single script eliminated our nightly RAM warnings.
 
+### com.openclaw.heartbeat.plist
+- **Schedule:** Hourly, 07:00–21:00 CET
+- **Action:** Checks disk usage and Ollama availability, sends Telegram alert on failure
+- **Requires:** Edit the plist and replace `YOUR_TELEGRAM_BOT_TOKEN` and `YOUR_TELEGRAM_CHAT_ID` before loading:
+  ```bash
+  nano ~/Library/LaunchAgents/com.openclaw.heartbeat.plist
+  # Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in the EnvironmentVariables block
+  ```
+- **Why:** Notifies you immediately if disk fills up or Ollama crashes — without any LLM involved
+
 ### com.openclaw.memory-index-sync.plist
 - **Schedule:** 6x daily, 07:15–22:00 only
 - **Action:** Checks if memory index is dirty, forces re-index if needed
