@@ -150,19 +150,21 @@ ollama serve &
 
 | RAM | Recommended Models |
 |-----|--------------------|
-| 16 GB | `ollama pull qwen2.5:3b` (heartbeat only) |
-| 24 GB | `ollama pull qwen2.5:7b` + `ollama pull mistral:7b` |
+| 16 GB | `ollama pull qwen2.5:3b` + `ollama pull mistral:7b` |
+| 24 GB | Above + `ollama pull mistral-small:22b` |
 | 32 GB | Above + `ollama pull qwen2.5-coder:14b` |
-| 64 GB | Above + `ollama pull mistral-small:22b` + `ollama pull qwen2.5:32b` |
+| 64 GB | Above + `ollama pull qwen2.5:32b` |
 
-**Always pull the heartbeat model first:**
+> **Heartbeat:** The recommended setup uses the **shell-based heartbeat** (LaunchAgent) — no LLM needed for heartbeats. See [COST-OPTIMIZATION.md](COST-OPTIMIZATION.md) for details. If you prefer LLM heartbeats, pull `mistral-small:22b` (reliable) rather than `qwen2.5:3b` (known timeout issues).
+
+Pull your primary local model:
 ```bash
-ollama pull qwen2.5:3b
+ollama pull mistral-small:22b
 ```
 
 Test it:
 ```bash
-ollama run qwen2.5:3b "Say hello"
+ollama run mistral-small:22b "Say hello"
 # Ctrl+D to exit
 ```
 
@@ -199,20 +201,28 @@ Edit the config:
 nano ~/.openclaw/openclaw.json
 ```
 
-Set the heartbeat model to your smallest local model:
+Set heartbeat to `none` (recommended — use shell LaunchAgent instead of LLM):
 ```json
 {
   "agents": {
     "defaults": {
       "heartbeat": {
-        "model": "ollama/qwen2.5:3b"
+        "target": "none"
       }
     }
   }
 }
 ```
 
-See **[COST-OPTIMIZATION.md](COST-OPTIMIZATION.md)** for the full model routing guide.
+Then install the shell heartbeat LaunchAgent:
+```bash
+# Replace YOUR_USER with your macOS username first
+sed -i '' "s|YOUR_USER|$(whoami)|g" launchagents/com.openclaw.heartbeat.plist
+cp launchagents/com.openclaw.heartbeat.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.openclaw.heartbeat.plist
+```
+
+See **[COST-OPTIMIZATION.md](COST-OPTIMIZATION.md)** for the full model routing guide and heartbeat architecture.
 
 ---
 

@@ -47,7 +47,7 @@ In `~/.openclaw/openclaw.json`:
 Or tell your bot directly via Telegram:
 ```
 Switch to Claude Sonnet as the default model.
-Use the local Ollama qwen2.5:3b for heartbeat checks.
+Use the shell-based heartbeat LaunchAgent (no LLM needed). See the Heartbeat Architecture section below.
 ```
 
 ---
@@ -207,7 +207,7 @@ Set these at [console.anthropic.com](https://console.anthropic.com):
 
 ```
 [ ] Primary model set to Sonnet (not Opus)
-[ ] Heartbeat using local model (qwen2.5:3b)
+[x] Heartbeat using shell LaunchAgent (no LLM — see com.openclaw.heartbeat.plist)
 [ ] Heartbeat interval: 60 minutes, schedule: 8-22
 [ ] HEARTBEAT.md: binary logic, 2-3 checks max
 [ ] Usage tracking enabled (/usage full)

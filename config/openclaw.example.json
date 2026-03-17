@@ -13,9 +13,14 @@
   "agents": {
     "defaults": {
       "heartbeat": {
+        // Recommended: use shell LaunchAgent (com.openclaw.heartbeat.plist) + set target to "none"
+        // LLM heartbeats with local models cause gateway hangs when the model is cold.
+        "target": "none",
+        // If you prefer LLM heartbeats, use mistral-small:22b (NOT qwen2.5:3b — timeout issues):
+        // "model": "ollama/mistral-small:22b",
+        // "lightContext": true,
         "interval": 3600,
-        "schedule": "8-22",
-        "model": "ollama/qwen2.5:3b"
+        "schedule": "8-22"
       }
     }
   },

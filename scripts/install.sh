@@ -90,32 +90,31 @@ else
     fi
 fi
 
-# Pull heartbeat model (always needed)
-echo ""
-echo "Pulling heartbeat model (qwen2.5:3b)..."
-ollama pull qwen2.5:3b
-ok "Heartbeat model ready"
-
 # Check RAM and suggest models
 RAM_BYTES=$(sysctl -n hw.memsize)
 RAM_GB=$((RAM_BYTES / 1073741824))
 echo ""
 echo "Detected RAM: ${RAM_GB} GB"
 
+# Note: Shell-based heartbeat (LaunchAgent) is recommended — no LLM needed for heartbeats.
+# qwen2.5:3b is a useful lightweight model for simple sub-agent tasks, not heartbeat.
+
 if [ "$RAM_GB" -ge 64 ]; then
     echo "Pulling recommended models for ${RAM_GB}GB..."
-    ollama pull qwen2.5:7b
-    ollama pull mistral:7b
+    ollama pull mistral-small:22b
     ollama pull qwen2.5-coder:14b
+    ollama pull qwen2.5:3b
     ok "All recommended models pulled"
 elif [ "$RAM_GB" -ge 24 ]; then
     echo "Pulling recommended models for ${RAM_GB}GB..."
-    ollama pull qwen2.5:7b
-    ollama pull mistral:7b
+    ollama pull mistral-small:22b
+    ollama pull qwen2.5:3b
     ok "Recommended models pulled"
 elif [ "$RAM_GB" -ge 16 ]; then
-    echo "16GB RAM detected. Sticking with qwen2.5:3b for now."
-    echo "You can pull larger models later if needed."
+    echo "Pulling lightweight models for ${RAM_GB}GB..."
+    ollama pull qwen2.5:3b
+    ollama pull mistral:7b
+    ok "Lightweight models pulled. Pull mistral-small:22b later if you need more capability."
 else
     warn "Less than 16GB RAM. Local models will be limited. Consider using cloud API only."
 fi
