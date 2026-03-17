@@ -4,17 +4,22 @@
 <dict>
     <key>Label</key>
     <string>com.openclaw.session-cleanup</string>
+
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>-c</string>
-        <string>find "$HOME/.openclaw/agents/main/sessions" -name "*.jsonl" -mmin +120 -type f -delete 2>/dev/null; echo "$(date): session cleanup done" >> /tmp/openclaw-session-cleanup.log</string>
+        <string>/Users/YOUR_USER/.openclaw/workspace/scripts/session-cleanup.sh</string>
     </array>
+
     <key>StartInterval</key>
     <integer>1800</integer>
+
     <key>RunAtLoad</key>
     <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/YOUR_USER/.openclaw/workspace/logs/session-cleanup.log</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/openclaw-session-cleanup-error.log</string>
+    <string>/Users/YOUR_USER/.openclaw/workspace/logs/session-cleanup.log</string>
 </dict>
 </plist>
