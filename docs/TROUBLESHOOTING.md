@@ -173,6 +173,8 @@ If you use a model constantly (e.g. for heartbeats), keep it loaded permanently.
 
 > **Lesson learned:** Do NOT set a short KEEP_ALIVE on your primary model if it's used for heartbeats or frequent sub-agent calls. The reload overhead will make responses feel slow and cause timeout errors.
 
+> **Heartbeat model lesson (2026-03-17):** Small models like qwen2.5:3b caused repeated heartbeat timeouts and gateway hangs. Use **mistral-small:22b with `lightContext: true`** for heartbeats — it's already warm in RAM and responds reliably. Do not switch to a smaller model without explicit testing under load.
+
 ---
 
 ## Vector Memory Index Out of Sync

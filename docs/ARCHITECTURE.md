@@ -56,7 +56,8 @@ The core process. It:
 Local LLM runtime. Runs models directly on the Mac's GPU/CPU with zero network traffic.
 
 **Key models:**
-- **qwen2.5:3b** — Heartbeat and lightweight checks (always install this first)
+- **mistral-small:22b** — Heartbeat (fixed model; already warm in RAM, use `lightContext: true` in config)
+- **qwen2.5:3b** — Lightweight fallback tasks (NOT for heartbeat — caused repeated timeout hangs)
 - **mistral:7b** / **qwen2.5:7b** — General purpose sub-agent tasks
 - **qwen2.5-coder:14b** — Dedicated coding tasks
 - **nomic-embed-text** — Embeddings for memory vector search
@@ -140,7 +141,7 @@ User message
     │
     ├─ Sub-agent: draft/summary ─── Ollama / mistral (local)
     │
-    ├─ Heartbeat checks ─────────── Ollama / qwen2.5:3b (local)
+    ├─ Heartbeat checks ─────────── Ollama / mistral-small:22b (local, lightContext=true)
     │
     └─ Image analysis ───────────── Ollama / llama3.2-vision (local, exec only)
 ```
