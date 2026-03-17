@@ -261,12 +261,23 @@ Fix anything it flags before relying on the bot for real work.
 
 ## Phase 4: Go Headless
 
-Once everything works:
+Before disconnecting peripherals, verify everything works remotely:
+
+**Pre-flight checklist (do all 4 before unplugging):**
+
+1. **Health check:** `./scripts/health-check.sh` — all green?
+2. **Telegram test:** Send `/status` to your bot — does it respond?
+3. **SSH test:** From your laptop: `ssh openclaw@<tailscale-ip>` — can you connect?
+4. **Reboot test:** Restart the Mac (`sudo reboot`), wait 2 minutes, then re-test Telegram and SSH
+
+If all 4 checks pass, you're ready to go headless:
 
 1. Unplug the monitor, keyboard, and mouse
 2. Tuck the Mac in a corner — it just needs power and network
 3. Chat via Telegram from anywhere
 4. Manage via SSH over Tailscale: `ssh openclaw@<tailscale-ip>`
+
+> **Tip:** Keep the Mac plugged into ethernet if possible. Wi-Fi works, but ethernet is more reliable for a 24/7 server.
 
 ---
 
