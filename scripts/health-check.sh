@@ -108,7 +108,7 @@ else
 fi
 
 # Firewall
-FW_STATUS=$(sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null | grep -c "enabled" || echo "0")
+FW_STATUS=$(defaults read /Library/Preferences/com.apple.alf globalstate 2>/dev/null || echo "0")
 if [ "$FW_STATUS" -ge 1 ]; then
     ok "Firewall: enabled"
 else
