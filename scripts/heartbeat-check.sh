@@ -1,7 +1,7 @@
 #!/bin/bash
-# heartbeat-check.sh — Shell-only Heartbeat für Kirchberg
+# heartbeat-check.sh — Shell-only heartbeat for OpenClaw
 # Kein LLM, kein OpenClaw, kein Hängen möglich.
-# Triggered by: com.kirchberg.heartbeat LaunchAgent (stündlich, 07:00–22:00 CET)
+# Triggered by: com.openclaw.heartbeat LaunchAgent (hourly, 07:00-22:00 local time)
 #
 # Checks:
 #   1. Disk usage > 90% → Alert
@@ -28,7 +28,7 @@ fi
 
 # Ergebnis
 if [ ${#ERRORS[@]} -gt 0 ]; then
-    MSG="⚠️ Kirchberg Heartbeat Alert:%0A"
+    MSG="⚠️ OpenClaw Heartbeat Alert:%0A"
     for ERR in "${ERRORS[@]}"; do
         MSG+="• ${ERR}%0A"
     done

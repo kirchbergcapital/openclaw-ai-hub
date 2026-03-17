@@ -82,8 +82,8 @@ chmod +x ~/.openclaw/workspace/scripts/heartbeat-check.sh
 nano ~/.openclaw/workspace/scripts/heartbeat-check.sh
 
 # 3. Install the LaunchAgent
-cp launchagents/com.kirchberg.heartbeat.plist ~/Library/LaunchAgents/
-launchctl load ~/Library/LaunchAgents/com.kirchberg.heartbeat.plist
+cp launchagents/com.openclaw.heartbeat.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.openclaw.heartbeat.plist
 
 # 4. Disable the OpenClaw heartbeat
 # In openclaw.json, set target to "none":

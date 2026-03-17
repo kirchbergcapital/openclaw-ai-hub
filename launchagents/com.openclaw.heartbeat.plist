@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.kirchberg.heartbeat</string>
+    <string>com.openclaw.heartbeat</string>
 
     <key>ProgramArguments</key>
     <array>
@@ -32,9 +32,9 @@
     </array>
 
     <key>StandardOutPath</key>
-    <string>/tmp/kirchberg-heartbeat.log</string>
+    <string>/tmp/openclaw-heartbeat.log</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/kirchberg-heartbeat.log</string>
+    <string>/tmp/openclaw-heartbeat.log</string>
 
     <key>RunAtLoad</key>
     <false/>
