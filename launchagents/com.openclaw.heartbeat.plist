@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/openclaw/.openclaw/workspace/scripts/heartbeat-check.sh</string>
+        <string>/Users/YOUR_USER/.openclaw/workspace/scripts/heartbeat-check.sh</string>
     </array>
 
     <!-- Stündlich: 07:00–21:00 CET (UTC 06:00–20:00) -->
