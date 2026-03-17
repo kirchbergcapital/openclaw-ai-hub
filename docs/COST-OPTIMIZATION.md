@@ -52,54 +52,90 @@ Use the local Ollama qwen2.5:3b for heartbeat checks.
 
 ---
 
-## Heartbeat Tuning
+## Heartbeat Architecture
 
-Heartbeats are periodic checks where the agent "wakes up" and reviews its state. Each heartbeat costs tokens.
+> **TL;DR:** Don't use a local LLM for heartbeats. Use a shell script LaunchAgent instead. LLM heartbeats cause the exact problem they're supposed to detect.
 
-### Reduce Heartbeat Frequency
+### The Problem with LLM Heartbeats
 
-Default is often every 30 minutes. For most users, every 60 minutes is fine:
+The OpenClaw built-in heartbeat calls a local LLM (mistral, qwen, etc.) to check system health. In production, this causes a critical failure mode:
+
+1. Ollama is slow/cold (just restarted, model not warm)
+2. Heartbeat calls LLM → hangs for 10 minutes (embedded run timeout)
+3. This **blocks the main session lane** — you can't talk to the assistant
+4. You have to SSH in and restart the gateway manually
+
+The heartbeat is trying to detect system problems, but it creates the very problem you want to detect.
+
+### Solution: Shell LaunchAgent (Recommended)
+
+Replace the LLM heartbeat with a pure shell script. No model, no context, no hang possible.
+
+**Setup:**
+
+```bash
+# 1. Copy the script
+cp scripts/heartbeat-check.sh ~/.openclaw/workspace/scripts/heartbeat-check.sh
+chmod +x ~/.openclaw/workspace/scripts/heartbeat-check.sh
+
+# 2. Edit the script — add your Telegram bot token and chat ID
+nano ~/.openclaw/workspace/scripts/heartbeat-check.sh
+
+# 3. Install the LaunchAgent
+cp launchagents/com.kirchberg.heartbeat.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.kirchberg.heartbeat.plist
+
+# 4. Disable the OpenClaw heartbeat
+# In openclaw.json, set target to "none":
+```
 
 ```json
 {
   "agents": {
     "defaults": {
       "heartbeat": {
-        "interval": 3600,
-        "schedule": "8-22",
-        "model": "ollama/qwen2.5:3b"
+        "target": "none"
       }
     }
   }
 }
 ```
 
-- `interval: 3600` — Check every 60 minutes instead of 30
-- `schedule: "8-22"` — Only between 8am and 10pm (no overnight checks)
-
-**Savings:** ~50% on heartbeat costs vs. default settings.
-
-### Keep HEARTBEAT.md Simple
-
-Your HEARTBEAT.md should have **binary logic** — 2-3 simple checks that return OK or Alert. Nothing more.
-
-**Good:**
-```markdown
-1. Check: Is the gateway process running?
-2. Check: Is disk usage below 90%?
-→ If both OK: respond "HEARTBEAT_OK"
-→ If any fail: alert via Telegram
+**Test:**
+```bash
+bash ~/.openclaw/workspace/scripts/heartbeat-check.sh
+echo "Exit: $?"  # 0 = OK, 1 = Alert sent
 ```
 
-**Bad:**
+The script checks:
+- Disk usage > 90% → Telegram alert
+- Ollama not reachable → Telegram alert
+- Everything OK → silent exit 0
+
+**Runs:** Every hour, 07:00–21:00 CET (UTC 06:00–20:00). Adjust the plist for your timezone.
+
+### If You Still Want an LLM Heartbeat
+
+For non-system-check heartbeats (e.g. "remind me of todos", "check for urgent emails"), an LLM heartbeat is fine — but keep it simple:
+
+- Use `lightContext: true` to reduce token load
+- Keep HEARTBEAT.md to **binary logic only** — 2 checks, OK or Alert
+- Use `mistral-small:22b` (stays warm in RAM) not a tiny model that cold-loads
+
+**HEARTBEAT.md — good:**
+```markdown
+1. Shell: df -h / | awk 'NR==2{print $5}'  → alert if > 90%
+2. Shell: pgrep -x ollama                    → alert if not running
+→ OK: HEARTBEAT_OK
+→ Alert: send 1 sentence via message tool
+```
+
+**HEARTBEAT.md — bad:**
 ```markdown
 1. Check gateway, ollama, tailscale, docker, 5 other services
 2. Analyze memory usage trends
 3. Review recent conversation quality
-4. Generate a daily summary
 ```
-
-Complex heartbeats with 8+ rules cause small models (3b) to produce verbose, unpredictable output instead of a clean OK/Alert.
 
 ---
 
