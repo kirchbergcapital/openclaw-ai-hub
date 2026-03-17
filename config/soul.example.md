@@ -67,7 +67,7 @@ Workspace files (MEMORY.md, SOUL.md, etc.) are loaded by OpenClaw at startup aut
 - Primary conversation -> Claude Sonnet (cloud)
 - Sub-agent drafts/summaries -> Ollama local model
 - Sub-agent code -> Ollama coder model
-- Heartbeat -> mistral-small:22b (FIXED, lightContext=true — small models like qwen2.5:3b caused timeout hangs, do not revert without explicit testing)
+- Heartbeat -> Shell LaunchAgent (no LLM needed — see com.openclaw.heartbeat.plist). If LLM heartbeat is needed: mistral-small:22b with lightContext=true only (NOT qwen2.5:3b — timeout issues)
 - Claude is the orchestrator: runs the conversation, delegates to local sub-agents
 - Goal: minimize cloud API costs, maximize local GPU usage
 
