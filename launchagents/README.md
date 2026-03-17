@@ -55,6 +55,18 @@ launchctl list | grep openclaw
 - **Action:** Prevents the Mac from sleeping
 - **Why:** The machine needs to be available 24/7
 
+### com.openclaw.safari-cleanup.plist
+- **Schedule:** Daily at 22:15
+- **Action:** Quits Safari and kills all WebKit processes
+- **Why:** Safari tabs accumulate as separate processes overnight. On a 24 GB machine with Ollama running, 10+ open tabs = 2–4 GB RAM. This reclaims it before overnight tasks run.
+- **Lesson learned:** This single script eliminated our nightly RAM warnings.
+
+### com.openclaw.memory-index-sync.plist
+- **Schedule:** 6x daily, 07:15–22:00 only
+- **Action:** Checks if memory index is dirty, forces re-index if needed
+- **Why:** OpenClaw's `sync.watch: true` doesn't reliably detect new files. Without this, memory search returns stale results.
+- **Why not hourly 24/7?** Running at night triggers the Ollama embedding model unnecessarily, keeping RAM occupied and preventing full overnight recovery.
+
 ## Adding Your Own
 
 Create a `.plist` file following the same pattern. Key fields:

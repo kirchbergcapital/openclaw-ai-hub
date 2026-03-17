@@ -131,29 +131,47 @@
 
 ## RAM Issues
 
-**Symptom:** Mac becomes sluggish, swap usage high.
+**Symptom:** Mac becomes sluggish, swap usage high, health-check warns "RAM low".
 
-1. **Check memory pressure:**
-   ```bash
-   memory_pressure
-   ```
+**Important:** macOS "free RAM" figures are misleading. The OS keeps recently-used pages as "Inactive" cache — that memory is instantly reclaimed when needed. Only check "Swap I/O" to determine if you have a real problem:
+```bash
+memory_pressure | grep -E "Swap|free percentage"
+# System-wide memory free percentage: 89% = fine even if "free" shows 600MB
+```
 
-2. **Unload heavy Ollama models:**
-   ```bash
-   ollama stop qwen2.5:14b
-   ollama stop mistral-small:22b
-   ```
+**Real fix — Safari tabs are usually the culprit:**
 
-3. **Kill accumulated browser processes:**
-   ```bash
-   pkill -f "Chrome Helper (Renderer)"
-   pkill -f "WebKit.WebContent"
-   pkill -f "Safari"
-   ```
+Safari runs every open tab as a separate WebKit process. 10 open tabs = 2–4 GB gone, even when the screen is locked.
 
-4. **Consider setting Ollama's KEEP_ALIVE:**
-   - `-1` = keep models loaded permanently (fast, uses more RAM)
-   - `5m` = unload models after 5 minutes of inactivity (saves RAM, slower first response)
+```bash
+# Check how many WebKit processes are running
+ps aux | grep -c "com.apple.WebKit"
+
+# Kill them manually
+pkill -f "Safari"
+pkill -f "com.apple.WebKit"
+```
+
+**Permanent fix:** Use the `safari-cleanup` LaunchAgent (runs daily at 22:15). See `launchagents/com.openclaw.safari-cleanup.plist`.
+
+**Other culprits:**
+```bash
+# Unload Ollama models you're not actively using
+ollama ps                    # see what's loaded
+curl -s http://localhost:11434/api/generate \
+  -d '{"model":"MODEL_NAME","keep_alive":0}' -o /dev/null  # unload specific model
+
+# Kill Chrome renderer accumulation
+pkill -f "Chrome Helper (Renderer)"
+```
+
+**Ollama KEEP_ALIVE — know the trade-off:**
+- `keep_alive: -1` = model stays loaded permanently → instant responses, uses RAM 24/7
+- `keep_alive: 5m` = model unloads after 5 min idle → saves RAM, ~10s reload penalty
+
+If you use a model constantly (e.g. for heartbeats), keep it loaded permanently. If you only use it occasionally, let it unload.
+
+> **Lesson learned:** Do NOT set a short KEEP_ALIVE on your primary model if it's used for heartbeats or frequent sub-agent calls. The reload overhead will make responses feel slow and cause timeout errors.
 
 ---
 

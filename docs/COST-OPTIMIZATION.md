@@ -11,9 +11,20 @@ Without these settings, a single runaway automation can burn through $50-200 in 
 | Role | Model | Cost | Use Case |
 |------|-------|------|----------|
 | Primary | Claude Sonnet | ~$3-15/M tokens | Your conversations |
-| Heartbeat | ollama/qwen2.5:3b | Free | Periodic health checks |
-| Sub-agent | ollama/mistral:7b | Free | Drafts, summaries, translations |
-| Code | ollama/qwen2.5-coder:14b | Free | Code generation tasks |
+| Heartbeat | Small local model (see below) | Free | Periodic health checks |
+| Sub-agent | Mid-size local model | Free | Drafts, summaries, translations |
+| Code | Local coder model | Free | Code generation tasks |
+
+### Choosing Your Heartbeat Model
+
+**Rule:** Use the model that's already warm (loaded in RAM).
+
+If your primary local model runs constantly anyway (e.g. for sub-agents), use it for heartbeats too — no extra RAM cost. Using a *separate* tiny model just for heartbeats only makes sense if your primary model frequently unloads.
+
+**Minimum hardware for local models:**
+- 16 GB RAM → 7B models (heartbeat + basic sub-agents)
+- 24 GB RAM → 14B models (good quality sub-agents + primary local)
+- 48+ GB RAM → 22B+ models (near-Claude quality local inference)
 
 ### Configuration
 
@@ -26,7 +37,7 @@ In `~/.openclaw/openclaw.json`:
   "agents": {
     "defaults": {
       "heartbeat": {
-        "model": "ollama/qwen2.5:3b"
+        "model": "ollama/YOUR_WARM_MODEL"
       }
     }
   }
