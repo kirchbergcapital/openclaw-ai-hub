@@ -1,4 +1,5 @@
 {
+  "_comment": "Minimal config. See docs/COST-OPTIMIZATION.md for model routing and docs/TROUBLESHOOTING.md for common issues.",
   "channels": {
     "telegram": {
       "botToken": "YOUR_TELEGRAM_BOT_TOKEN"
@@ -13,12 +14,7 @@
   "agents": {
     "defaults": {
       "heartbeat": {
-        // Recommended: use shell LaunchAgent (com.openclaw.heartbeat.plist) + set target to "none"
-        // LLM heartbeats with local models cause gateway hangs when the model is cold.
         "target": "none",
-        // If you prefer LLM heartbeats, use mistral-small:22b (NOT qwen2.5:3b — timeout issues):
-        // "model": "ollama/mistral-small:22b",
-        // "lightContext": true,
         "interval": 3600,
         "schedule": "8-22"
       }
@@ -26,8 +22,6 @@
   },
   "memory": {
     "sync": {
-      // sync.watch is unreliable in production — new files are often not indexed automatically.
-      // Use the com.openclaw.memory-index-sync LaunchAgent instead (runs hourly, forces re-index if dirty).
       "watch": false
     }
   }
