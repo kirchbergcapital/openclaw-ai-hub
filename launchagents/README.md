@@ -27,13 +27,12 @@ Reserve OpenClaw crons **only** for tasks that genuinely need Claude (cloud).
 Copy the `.plist` files to your LaunchAgents directory:
 
 > **Note:** The `.plist` files use `/Users/YOUR_USER/` as a placeholder.
-> Replace `YOUR_USER` with your macOS username (e.g., `openclaw`):
-> ```bash
-> sed -i '' "s|YOUR_USER|$(whoami)|g" launchagents/*.plist
-> ```
+> Always copy first, then substitute — never modify the repo files directly:
 
 ```bash
 cp launchagents/*.plist ~/Library/LaunchAgents/
+# Replace YOUR_USER with your actual macOS username in the copies:
+sed -i '' "s|YOUR_USER|$(whoami)|g" ~/Library/LaunchAgents/com.openclaw.*.plist
 
 # Load them:
 for plist in ~/Library/LaunchAgents/com.openclaw.*.plist; do

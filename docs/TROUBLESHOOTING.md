@@ -186,9 +186,9 @@ OpenClaw's `sync.watch: true` config is unreliable — files may not be indexed 
 **Recommended setup:** Use `sync.watch: false` in your config and rely on the `com.openclaw.memory-index-sync` LaunchAgent instead. It runs hourly and forces a re-index if the index is dirty.
 
 ```bash
-# Install the LaunchAgent (replace YOUR_USER):
-sed -i '' "s|YOUR_USER|$(whoami)|g" launchagents/com.openclaw.memory-index-sync.plist
+# Copy first, then substitute — never modify the repo file
 cp launchagents/com.openclaw.memory-index-sync.plist ~/Library/LaunchAgents/
+sed -i '' "s|YOUR_USER|$(whoami)|g" ~/Library/LaunchAgents/com.openclaw.memory-index-sync.plist
 launchctl load ~/Library/LaunchAgents/com.openclaw.memory-index-sync.plist
 ```
 

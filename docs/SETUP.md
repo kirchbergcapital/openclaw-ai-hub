@@ -216,9 +216,11 @@ Set heartbeat to `none` (recommended — use shell LaunchAgent instead of LLM):
 
 Then install the shell heartbeat LaunchAgent:
 ```bash
-# Replace YOUR_USER with your macOS username first
-sed -i '' "s|YOUR_USER|$(whoami)|g" launchagents/com.openclaw.heartbeat.plist
+# Copy first, then substitute — never modify the repo file
 cp launchagents/com.openclaw.heartbeat.plist ~/Library/LaunchAgents/
+sed -i '' "s|YOUR_USER|$(whoami)|g" ~/Library/LaunchAgents/com.openclaw.heartbeat.plist
+# Edit credentials: replace YOUR_TELEGRAM_BOT_TOKEN and YOUR_TELEGRAM_CHAT_ID
+nano ~/Library/LaunchAgents/com.openclaw.heartbeat.plist
 launchctl load ~/Library/LaunchAgents/com.openclaw.heartbeat.plist
 ```
 
