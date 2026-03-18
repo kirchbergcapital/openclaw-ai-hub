@@ -62,7 +62,7 @@ graph LR
 ### Installation
 
 ```bash
-git clone https://github.com/kirchbergcapital/openclaw-ai-hub.git
+git clone https://github.com/kirchbergcapitalservices/openclaw-ai-hub.git
 cd openclaw-ai-hub
 chmod +x scripts/*.sh
 ./scripts/install.sh
@@ -112,7 +112,7 @@ The Pro version adds:
 - **Apple Integration** — Calendar, Reminders, Notes via CLI tools.
 - **Monitoring Dashboard** — Request stats, cost tracking, privacy audit log.
 
-**Access via GitHub Sponsors** — [Become a sponsor](https://github.com/sponsors/kirchbergcapital) starting at €19/month.
+**Access via GitHub Sponsors** — [Become a sponsor](https://github.com/sponsors/kirchbergcapitalservices) starting at €19/month.
 
 ## Contributing
 
@@ -124,4 +124,4 @@ MIT License — see [LICENSE](LICENSE).
 
 ---
 
-*For enterprise AI infrastructure solutions, [get in touch](https://github.com/kirchbergcapital).*
+*For enterprise AI infrastructure solutions, [get in touch](https://github.com/kirchbergcapitalservices).*
