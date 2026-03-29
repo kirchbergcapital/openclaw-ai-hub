@@ -43,8 +43,8 @@ graph LR
 
 | Model | Type | RAM | Strength | Use Case |
 |-------|------|-----|----------|----------|
-| Mistral 7B | Local | ~4 GB | General purpose, code | Sub-agent tasks, drafts |
-| Qwen 2.5 7B | Local | ~4 GB | Analysis, routing | Heartbeat, lightweight tasks |
+| Mistral Small 3.1 22B (Q4_K_M) | Local | ~16 GB | General purpose, tool use | Primary fallback, sub-agents |
+| Qwen 2.5 3B | Local | ~2 GB | Lightweight routing | Cron jobs, heartbeat |
 | Qwen 2.5 Coder 14B | Local | ~9 GB | Code generation | Dedicated coding sub-agent |
 | Phi-4 14B | Local | ~9 GB | Reasoning | Analysis (no tool support!) |
 | Claude Sonnet | Cloud | — | Orchestration, complex tasks | Primary conversation model |
