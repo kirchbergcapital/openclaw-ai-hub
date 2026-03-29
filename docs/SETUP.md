@@ -151,20 +151,22 @@ ollama serve &
 | RAM | Recommended Models |
 |-----|--------------------|
 | 16 GB | `ollama pull qwen2.5:3b` + `ollama pull mistral:7b` |
-| 24 GB | Above + `ollama pull mistral-small:22b` |
+| 24 GB | Above + `ollama pull mistral-small:latest` (Q4_K_M, ~16 GB VRAM) |
 | 32 GB | Above + `ollama pull qwen2.5-coder:14b` |
-| 64 GB | Above + `ollama pull qwen2.5:32b` |
+| 64 GB | Above + `ollama pull qwen2.5:32b` + `ollama pull qwen2.5:72b` |
 
-> **Heartbeat:** The recommended setup uses the **shell-based heartbeat** (LaunchAgent) — no LLM needed for heartbeats. See [COST-OPTIMIZATION.md](COST-OPTIMIZATION.md) for details. If you prefer LLM heartbeats, pull `mistral-small:22b` (reliable) rather than `qwen2.5:3b` (known timeout issues).
+> **Model quality tip:** For 24 GB machines, `mistral-small:latest` (Q4_K_M quantization) is significantly better than the older `mistral-small:22b` (Q4_0). It uses ~16 GB VRAM with a 16K context window — leaving ~8 GB free for OpenClaw and other services.
+
+> **Heartbeat:** The recommended setup uses the **shell-based heartbeat** (LaunchAgent) — no LLM needed for heartbeats. See [COST-OPTIMIZATION.md](COST-OPTIMIZATION.md) for details.
 
 Pull your primary local model:
 ```bash
-ollama pull mistral-small:22b
+ollama pull mistral-small:latest
 ```
 
 Test it:
 ```bash
-ollama run mistral-small:22b "Say hello"
+ollama run mistral-small:latest "Say hello"
 # Ctrl+D to exit
 ```
 
