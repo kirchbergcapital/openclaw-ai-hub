@@ -85,6 +85,7 @@ For the full step-by-step guide, see **[docs/SETUP.md](docs/SETUP.md)**.
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture and data flow |
 | [COST-OPTIMIZATION.md](docs/COST-OPTIMIZATION.md) | Model routing, heartbeat config, session hygiene |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems and solutions |
+| [MEMORY-MANAGEMENT.md](docs/MEMORY-MANAGEMENT.md) | Memory architecture, staleness prevention, multi-node sync |
 
 ## Data Privacy
 
