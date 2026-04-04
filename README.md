@@ -86,6 +86,7 @@ For the full step-by-step guide, see **[docs/SETUP.md](docs/SETUP.md)**.
 | [COST-OPTIMIZATION.md](docs/COST-OPTIMIZATION.md) | Model routing, heartbeat config, session hygiene |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems and solutions |
 | [MEMORY-MANAGEMENT.md](docs/MEMORY-MANAGEMENT.md) | Memory architecture, staleness prevention, multi-node sync |
+| [OPERATIONAL-FRAMEWORK.md](docs/OPERATIONAL-FRAMEWORK.md) | Priority Map + Auto-Resolver: when to act, ask, or escalate |
 
 ## Data Privacy
 
