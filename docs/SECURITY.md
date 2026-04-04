@@ -164,6 +164,133 @@ See **[COST-OPTIMIZATION.md](COST-OPTIMIZATION.md)** for details.
 
 ---
 
+## 12. Endpoint Protection (Antivirus)
+
+Your AI machine runs 24/7 with shell access. It downloads files, executes code, installs packages, and interacts with the internet autonomously. This is a fundamentally different threat profile than a laptop that sits idle most of the day.
+
+### Why macOS Built-In Security Is Not Enough
+
+macOS ships with Gatekeeper (app notarization) and XProtect (basic malware signatures). These provide a baseline, but they are designed for interactive desktop use — not for a machine running autonomous agents that pull code from the internet, execute arbitrary shell commands, and process untrusted input around the clock.
+
+A dedicated endpoint protection suite adds:
+
+- **Real-time file scanning** — catches malicious payloads before they execute
+- **Web and network filtering** — blocks known malicious domains and C2 callbacks
+- **Behavioral detection** — flags suspicious process chains (e.g., a Python script spawning curl to an unknown IP)
+- **Scheduled deep scans** — catches dormant threats that slipped past real-time protection
+
+### Recommended Products
+
+| Product | Real-Time Protection | Cost | Notes |
+|---|---|---|---|
+| ESET Cyber Security / ESET HOME Security | Yes | Paid | Full endpoint suite for macOS, includes firewall and web filtering |
+| Sophos Home | Yes | Free tier available | Centralized dashboard, good for managing multiple machines |
+| Malwarebytes | Yes (Premium) | Free tier available | Strong on-demand scanning, premium adds real-time protection |
+| ClamAV | No | Free, open-source | Signature-based scanning only, no real-time protection — suitable as a supplementary scanner but not as a primary defense |
+
+Choose one product with real-time protection as your primary defense. ClamAV can serve as a secondary on-demand scanner.
+
+### Installation Strategy
+
+Install the endpoint protection software on **both** the admin account and the service account:
+
+- **Admin account** — manages the security software, receives alerts, handles configuration and updates
+- **Service account** (where OpenClaw runs) — is actively protected by the software's real-time scanning and behavioral detection
+
+This separation ensures the agent cannot modify or disable its own security configuration while still being fully covered by it.
+
+### Scheduled Scans
+
+Configure a daily full-system scan during idle hours. A good default:
+
+```
+Schedule: Daily at 05:00
+Scope:    Full system scan
+Action:   Quarantine detected threats, notify admin account
+```
+
+Most endpoint protection suites let you configure this through their GUI or a plist/launchd job. Run the scan when the machine is idle (no heavy agent workloads) to avoid performance impact.
+
+### What to Monitor
+
+Review your endpoint protection dashboard periodically for:
+
+- Quarantined files (inspect what was caught and why)
+- Blocked network connections (may indicate a compromised dependency)
+- Scan failures (ensure scans are actually completing)
+
+---
+
+## 13. GitHub Repository Security
+
+If you host your OpenClaw configuration, scripts, automations, or custom tools on GitHub, you should enable the platform's built-in security features. All four features below are **free** for public repositories and free for private repositories on GitHub Free/Pro/Team plans.
+
+### Features to Enable
+
+#### Secret Scanning
+
+Detects API keys, tokens, credentials, and other secrets that have been committed to your repository. GitHub scans the full commit history, not just the latest push.
+
+This is especially important for AI setups: your agent may generate code, commit configs, or push files that accidentally contain tokens from environment variables or API responses.
+
+#### Push Protection
+
+**Blocks pushes** that contain detected secrets before they reach the remote repository. This is your last line of defense — if a secret makes it into a commit, Push Protection prevents it from ever becoming public.
+
+Without Push Protection, a leaked secret is in your Git history forever (even if you delete the file in a later commit). Cleaning it requires a force-push and history rewrite.
+
+#### Dependabot Alerts
+
+Monitors your dependencies (package.json, requirements.txt, Gemfile, etc.) for known vulnerabilities from the GitHub Advisory Database. You receive alerts when a vulnerable version is detected.
+
+#### Dependabot Security Updates
+
+Automatically creates pull requests to update vulnerable dependencies to the minimum safe version. Review and merge these PRs promptly.
+
+### How to Enable
+
+1. Go to your repository on GitHub
+2. Navigate to **Settings** > **Code security and analysis** (or **Code security** on newer UIs)
+3. Enable all four features:
+   - Secret scanning: **Enable**
+   - Push protection: **Enable**
+   - Dependabot alerts: **Enable**
+   - Dependabot security updates: **Enable**
+
+For **organizations**: enable these at the organization level under **Settings** > **Code security and analysis** > **Enable all**. New repositories will automatically inherit these settings.
+
+### Pre-Commit Hook for Local Secret Scanning
+
+Push Protection catches secrets at the remote, but you can catch them earlier with a local pre-commit hook. This prevents secrets from entering your Git history in the first place.
+
+Using [pre-commit](https://pre-commit.com/) with a secret scanner:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.0  # check for latest version
+    hooks:
+      - id: gitleaks
+```
+
+Install and activate:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Every commit will now be scanned locally before it is created. If a secret is detected, the commit is blocked and you can remove the secret before it enters history.
+
+### Why This Matters for AI Setups
+
+Autonomous agents interact with APIs, process credentials in environment variables, and may generate or modify code that contains sensitive values. The risk of accidental secret exposure is significantly higher than in a traditional development workflow. Layering GitHub's server-side scanning with local pre-commit hooks provides defense in depth.
+
+---
+
+---
+
 ## Emergency: Kill Switch
 
 **Level 1 — Pause (from Telegram):**
@@ -186,16 +313,16 @@ launchctl unload ~/Library/LaunchAgents/ai.openclaw.gateway.plist
 
 ## Security Checklist
 
+Add the following items to your security checklist:
+
 ```
-[ ] Firewall enabled (block all incoming + stealth mode)
-[ ] FileVault enabled (recovery key stored on paper)
-[ ] All sharing services disabled
-[ ] Mac on guest WiFi / separate VLAN
-[ ] Running as standard (non-admin) user
-[ ] Tailscale SSH enabled, macOS Remote Login disabled
-[ ] OpenClaw tool policies configured
-[ ] SOUL.md boundaries set
-[ ] API spending limits configured
-[ ] Auto-login and auto-restart configured
-[ ] Kill switch procedure documented and tested
+[ ] Endpoint protection installed (admin + service account)
+[ ] Real-time protection enabled and verified
+[ ] Daily scheduled scan configured (e.g., 05:00)
+[ ] Endpoint protection dashboard reviewed (no unresolved alerts)
+[ ] GitHub Secret Scanning enabled
+[ ] GitHub Push Protection enabled
+[ ] Dependabot Alerts enabled
+[ ] Dependabot Security Updates enabled
+[ ] Pre-commit hooks for secret scanning installed and active
 ```
